@@ -14,16 +14,21 @@ BEGIN {
     plan skip_all => "Not mark's computer";
     exit;
   }
-  plan tests => 6;
+  plan tests => 8;
 } 
+
+use v5.10;
 
 use FindBin;
 use String::ShellQuote;
 use Path::Class;
 
-my $perl = 'perl -I'.shell_quote(dir($FindBin::Bin,"lib"))
+my $switches =  "-I".shell_quote(dir($FindBin::Bin,"lib"))
   ." -I".shell_quote(dir($FindBin::Bin)->parent->subdir("lib"))
   ." 2>&1";
+
+my $perl = "perl $switches";
+my $prove = "prove $switches";
 
 is(
   `$perl -MAVeryUnlikelyModuleName -E 'say \$::string'`,
@@ -47,6 +52,9 @@ is(
   is(`$perl -E 'say \$::string'`, "This will work!\n", "PERL5OPT");
 }
 
+my $goodscript = shell_quote(file($FindBin::Bin,"good.pl"));
+is(`$perl -MAVeryUnlikelyModuleName $goodscript`, "This will work!\n", "Good script");
+
 like(`$perl -MBadModuleWillDie`, qr/Invalid use of AVeryUnlikelyModuleName in/,
   "Bad module");
 
@@ -54,8 +62,11 @@ my $badscript = shell_quote(file($FindBin::Bin,"bad.pl"));
 like(`$perl $badscript`, qr/Invalid use of AVeryUnlikelyModuleName in/,
   "Bad script");
 
+TODO: {
+  local $TODO = "Bug in prove prevents loading modules from places you specified in -I";
 
-__END__;
-perl -MFoo -E 'say "This will work!"'
-echo 'use Foo; say "This will work!' | perl
-export PERL5OPT="Foo"; perl -E "This will work";
+my $testscript = shell_quote(file($FindBin::Bin,"justpass.t"));
+my $command = "$prove -MAVeryUnlikelyModuleName $testscript";
+like(`$prove -MAVeryUnlikelyModuleName $testscript`, qr/Result: PASS/, "prove");
+
+}
