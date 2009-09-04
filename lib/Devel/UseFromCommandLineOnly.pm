@@ -60,15 +60,15 @@ sub import {
 
   # process all other import arguments
   foreach (@_) {
-    
+
     # skip the checks if they're disabled
     if ($_ eq "disable_command_line_checks") {
       return;
     }
-    
+
     # go bang if we didn't understand the import argument
     croak "Invalid import argument to $pkg: $_"
-    
+
   }
 
   # panic if this isn't a "-" or "-e" invocation
