@@ -14,7 +14,7 @@ BEGIN {
     plan skip_all => "Not mark's computer";
     exit;
   }
-  plan tests => 8;
+  plan tests => 7;
 } 
 
 use v5.10;
@@ -61,12 +61,3 @@ like(`$perl -MBadModuleWillDie`, qr/Invalid use of AVeryUnlikelyModuleName in/,
 my $badscript = shell_quote(file($FindBin::Bin,"bad.pl"));
 like(`$perl $badscript`, qr/Invalid use of AVeryUnlikelyModuleName in/,
   "Bad script");
-
-TODO: {
-  local $TODO = "Bug in prove prevents loading modules from places you specified in -I";
-
-my $testscript = shell_quote(file($FindBin::Bin,"justpass.t"));
-my $command = "$prove -MAVeryUnlikelyModuleName $testscript";
-like(`$prove -MAVeryUnlikelyModuleName $testscript`, qr/Result: PASS/, "prove");
-
-}

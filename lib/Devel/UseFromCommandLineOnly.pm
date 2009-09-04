@@ -73,7 +73,7 @@ sub import {
 
   # panic if this isn't a "-" or "-e" invocation
   my ($package, $filename, $line) = caller;
-  unless ($filename eq "-e" || $filename eq "-" || $line == 0 || $package eq "App::Prove") {
+  unless ($filename eq "-e" || $filename eq "-" || $line == 0) {
     croak "Invalid use of $pkg in '$filename' at line $line; This module can only be loaded from the command line";
   }
 
