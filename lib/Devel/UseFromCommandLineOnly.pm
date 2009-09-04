@@ -58,6 +58,19 @@ sub import {
     return;
   }
 
+  # process all other import arguments
+  foreach (@_) {
+    
+    # skip the checks if they're disabled
+    if ($_ eq "disable_command_line_checks") {
+      return;
+    }
+    
+    # go bang if we didn't understand the import argument
+    croak "Invalid import argument to $pkg: $_"
+    
+  }
+
   # panic if this isn't a "-" or "-e" invocation
   my (undef, $filename) = caller;
   unless ($filename eq "-e" || $filename eq "-") {
@@ -66,6 +79,21 @@ sub import {
 
   return;
 }
+
+=head2 Disabling this module's functionality
+
+The one place that subclasses of this module will be needed to be loaded
+from within a script that is testing that subclass.  In this case
+it's possible to override this module's behavior:
+
+  #!/usr/bin/perl
+
+  use Test::More tests => 1;
+  use Foo qw(disable_command_line_checks);
+  isa_ok(Foo->new(), "Foo");
+
+End users should NEVER EVER DO THIS.  Or, if they do, they're playing
+with fire and deserve to get burnt...
 
 =head1 AUTHOR
 
