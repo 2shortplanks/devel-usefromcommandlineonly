@@ -8,4 +8,6 @@ test_requires  'Test::More'  => '0';
 
 license 'perl';
 
+auto_set_repository;
+
 WriteAll;
