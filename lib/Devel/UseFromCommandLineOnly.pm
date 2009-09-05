@@ -6,7 +6,7 @@ use strict;
 use Carp qw(croak confess);
 
 use vars qw($VERSION);
-$VERSION = 1;
+$VERSION = "1.00";
 
 =head1 NAME
 
